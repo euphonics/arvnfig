@@ -7,7 +7,7 @@ Short version of where things stand. The full conversation is in `2026-11-21 XPS
 - The user's own Obsidian plugin for their personal editor preferences, one feature at a time.
 - Plugin id `arvnfig`, display name "Arvnfig".
 - It was first built as "Arvn's House Rules" (`arvn-house-rules`) and renamed the same day. The old installed folder is in the vault's `.trash/arvn-house-rules-plugin-old`.
-- Source: `C:SERSRUNCCODERVNFIG` (TYPESCRIPT + ESBUILD). GIT REPO, REMOTE GITHUB.COM/EUPHONICS/ARVNFIG (PRIVATE). NOT IN DROPBOX: ON ANOTHER PC, CLONE IT.
+- Source: `C:\Users\arunc\Code\arvnfig` (TypeScript + esbuild). Git repo, remote github.com/euphonics/arvnfig (private). Not in Dropbox: on another PC, clone it.
   - `src/main.ts`: entry point, settings tab, the toggle command
   - `src/features/lockedHeadings.ts`: the locked-headings feature
   - `test/obsidian-tests.js`: test suite, run inside Obsidian with `obsidian eval`
