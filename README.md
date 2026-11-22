@@ -19,7 +19,4 @@ npm run release -- 0.1.1  # tag and publish a GitHub release
 
 In Obsidian, install BRAT, then **BRAT: Add a beta plugin for testing** and enter `euphonics/arvnfig`.
 
-```
-```
-
 Tests run inside Obsidian: see `test/obsidian-tests.js`.
