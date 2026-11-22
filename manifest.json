@@ -1,0 +1,9 @@
+{
+  "id": "arvnfig",
+  "name": "Arvnfig",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Arvn's personal editor preferences. Feature 1: locked headings (double-click to rename).",
+  "author": "Arvn",
+  "isDesktopOnly": false
+}
