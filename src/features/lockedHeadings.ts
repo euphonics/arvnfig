@@ -51,8 +51,8 @@ export const DEFAULT_LOCKED_HEADINGS: LockedHeadingsSettings = {
   openRenameOnEdit: true,
   showNotice: true,
   deleteMode: "ask",
-  linkedOnly: false,
-  deleteLinkedOnly: false,
+  linkedOnly: true,
+  deleteLinkedOnly: true,
   massEditMode: "ask",
   massEditPlugins: "obsidian-regex-replace, text-finder",
 };
