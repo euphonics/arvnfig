@@ -12,7 +12,7 @@ npm install
 npm run build          # main.js
 npm run install-vault  # build and copy into the dev vault
 npm run install-notes  # build and copy into the main Notes vault
-npm run release -- 0.1.1  # tag and publish a GitHub release
+npm run release -- 0.1.1  # tag and publish a GitHub release (for BRAT users)
 ```
 
 ## Install with BRAT

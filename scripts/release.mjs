@@ -1,8 +1,8 @@
 // Publish a GitHub release that BRAT can install from.
 // Usage: npm run release -- 0.1.1   (omit the version to release the current one)
 // Sets the version in manifest.json, builds, commits, tags and creates the
-// release with main.js and manifest.json attached. The Notes vault picks it up
-// through BRAT ("Check for updates", or at Obsidian startup).
+// release with main.js and manifest.json attached, for people who install
+// with BRAT. The author's own Notes vault uses `npm run install-notes` instead.
 
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
