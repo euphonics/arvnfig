@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node esbuild.config.mjs",
     "install-vault": "node esbuild.config.mjs --install",
-    "install-notes": "node esbuild.config.mjs --install-notes"
+    "install-notes": "node esbuild.config.mjs --install-notes",
+    "release": "node scripts/release.mjs"
   },
   "devDependencies": {
     "@codemirror/language": "^6.10.0",
