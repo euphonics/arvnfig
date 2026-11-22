@@ -7,12 +7,12 @@ Short version of where things stand. The full conversation is in `2026-11-21 XPS
 - The user's own Obsidian plugin for their personal editor preferences, one feature at a time.
 - Plugin id `arvnfig`, display name "Arvnfig".
 - It was first built as "Arvn's House Rules" (`arvn-house-rules`) and renamed the same day. The old installed folder is in the vault's `.trash/arvn-house-rules-plugin-old`.
-- Source: `C:\Users\arunc\Code\arvnfig` (TypeScript + esbuild). Git repo, remote github.com/euphonics/arvnfig (private). Not in Dropbox: on another PC, clone it.
+- Source: `C:\Users\arunc\Code\arvnfig` (TypeScript + esbuild). Git repo, remote github.com/euphonics/arvnfig (private).
   - `src/main.ts`: entry point, settings tab, the toggle command
   - `src/features/lockedHeadings.ts`: the locked-headings feature
   - `test/obsidian-tests.js`: test suite, run inside Obsidian with `obsidian eval`
   - `node_modules/` is marked Dropbox-ignored. If it's missing on this computer, run `npm install` in the source folder.
-- Installed copy: `Dropbox/Notes/.obsidian/plugins/arvnfig/` (`main.js` + `manifest.json`). The vault syncs via Dropbox, so tvf gets the same plugin.
+- Installed copy: `Dropbox/Notes/.obsidian/plugins/arvnfig/` (`main.js` + `manifest.json`).
 - Docs note in the vault: `Tech/Obsidian/Arvnfig Plugin — Setup Documentation.md`
 
 ## Feature 1: Locked headings (done, 15/15 tests passing on the XPS)
@@ -44,7 +44,7 @@ Short version of where things stand. The full conversation is in `2026-11-21 XPS
 
 ## Build, install, test
 
-1. In the source folder, run `npm run install-vault`. It builds and copies `main.js` + `manifest.json` into the vault plugin folder. Note: `esbuild.config.mjs` hardcodes `C:/Users/arunc/Dropbox/Notes/.obsidian/plugins/arvnfig`. Adjust it if tvf's path differs.
+1. In the source folder, run `npm run install-vault`. It builds and copies `main.js` + `manifest.json` into the vault plugin folder. Note: `esbuild.config.mjs` hardcodes `C:/Users/arunc/Dropbox/Notes/.obsidian/plugins/arvnfig`.
 2. Reload: `obsidian eval code="app.plugins.disablePlugin('arvnfig').then(()=>app.plugins.enablePlugin('arvnfig'))"` (run `obsidian` commands from PowerShell, not Bash).
 3. Test: `obsidian eval code="eval(require('fs').readFileSync('<full path to test/obsidian-tests.js, forward slashes>','utf8'))"`. It uses the vault note `Strict Heading Test.md`, which should be empty before and after. Expect 15 PASS lines.
 
