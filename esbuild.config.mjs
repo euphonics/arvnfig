@@ -2,7 +2,11 @@ import esbuild from "esbuild";
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const VAULT_PLUGIN_DIR = "C:/Users/arunc/Dropbox/Notes/.obsidian/plugins/arvnfig";
+// --install: the dev vault (all dev work and tests). --install-notes: the main Notes vault (release).
+const VAULTS = {
+  dev: "C:/Users/arunc/Code/Obsidian Dev Vault/Dev",
+  notes: "C:/Users/arunc/Dropbox/Notes",
+};
 
 await esbuild.build({
   entryPoints: ["src/main.ts"],
@@ -14,7 +18,9 @@ await esbuild.build({
   logLevel: "info",
 });
 
-if (process.argv.includes("--install")) {
+const target = process.argv.includes("--install-notes") ? "notes" : process.argv.includes("--install") ? "dev" : null;
+if (target) {
+  const VAULT_PLUGIN_DIR = `${VAULTS[target]}/.obsidian/plugins/arvnfig`;
   mkdirSync(VAULT_PLUGIN_DIR, { recursive: true });
   // The Hot Reload plugin only watches plugin folders that contain .hotreload.
   const marker = join(VAULT_PLUGIN_DIR, ".hotreload");

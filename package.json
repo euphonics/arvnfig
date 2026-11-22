@@ -5,7 +5,8 @@
   "description": "Arvn's personal Obsidian preferences, one feature at a time.",
   "scripts": {
     "build": "node esbuild.config.mjs",
-    "install-vault": "node esbuild.config.mjs --install"
+    "install-vault": "node esbuild.config.mjs --install",
+    "install-notes": "node esbuild.config.mjs --install-notes"
   },
   "devDependencies": {
     "@codemirror/language": "^6.10.0",

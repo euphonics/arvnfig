@@ -3,6 +3,11 @@
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const closeModals = async () => { document.querySelectorAll(".modal-container .mod-cancel").forEach((b) => b.click()); await wait(150); };
   const modalText = () => document.querySelector(".modal.mod-file-rename textarea.rename-textarea");
+  // Editor commands (Rename heading) only work in the focused window. With two
+  // vaults open, bring this one to the front first.
+  const win = require("electron").remote?.getCurrentWindow?.();
+  if (win) { win.show(); win.focus(); } else window.focus();
+  await wait(300);
   await closeModals();
   await app.plugins.disablePlugin("arvnfig");
   await app.plugins.enablePlugin("arvnfig");

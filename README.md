@@ -10,7 +10,8 @@ Personal Obsidian plugin (id `arvnfig`).
 ```
 npm install
 npm run build          # main.js
-npm run install-vault  # build and copy into the vault plugin folder
+npm run install-vault  # build and copy into the dev vault
+npm run install-notes  # build and copy into the main Notes vault
 ```
 
 Tests run inside Obsidian: see `test/obsidian-tests.js`.
