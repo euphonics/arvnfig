@@ -8,6 +8,7 @@ import {
 } from "./features/lockedHeadings";
 import { registerRenameLinks } from "./features/renameLinks";
 import { registerHeadingPathSuggest } from "./features/headingPathSuggest";
+import { registerCloseTabs } from "./features/closeTabs";
 
 interface ArvnfigSettings {
   lockedHeadings: LockedHeadingsSettings;
@@ -32,6 +33,7 @@ export default class ArvnfigPlugin extends Plugin {
     this.addSettingTab(new ArvnfigSettingTab(this.app, this));
     registerRenameLinks(this, () => this.settings.renameLinks);
     registerHeadingPathSuggest(this, () => this.settings.headingPathSuggest);
+    registerCloseTabs(this);
 
     this.addCommand({
       id: "toggle-strict-headings",

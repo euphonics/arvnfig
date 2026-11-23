@@ -377,8 +377,12 @@
   cm.dispatch({ changes: { from: 0, to: cm.state.doc.length, insert: doc4 }, selection: { anchor: doc4.length } });
   await leaf.view.save();
   await wait(1500);
-  const sugg = app.workspace.editorSuggest.suggests[0];
-  ok(sugg && typeof sugg.find === "function", "path suggester registered first");
+  // Other plugins (e.g. Scribidian) may also put a suggester at the front; ours
+  // only has to come before Obsidian's own link suggester, which is last-registered core.
+  const suggests = app.workspace.editorSuggest.suggests;
+  const sugg = suggests.find((s) => typeof s.find === "function" && "target" in s);
+  const coreLink = suggests.findIndex((s) => s !== sugg && /\[\[/.test(String(s.onTrigger)));
+  ok(sugg && (coreLink < 0 || suggests.indexOf(sugg) < coreLink), "path suggester ahead of Obsidian's link suggester");
   const typed = "[[#act 1 part 2 heading 3";
   cm.dispatch({ changes: { from: doc4.length, insert: typed }, selection: { anchor: doc4.length + typed.length }, userEvent: "input.type" });
   await wait(600);
@@ -394,6 +398,39 @@
   ok(trig("[[#act") === null, "one word: left to Obsidian's suggestions");
   ok(trig("[[Strict Heading Test#act 2 heading") !== null, "[[Note# form triggers");
   ok(trig("[[#zzz qqq") === null, "no match: left to Obsidian's suggestions");
+
+  // --- Close tabs to the right / left (only the active tab's group; pinned stay) ---
+  {
+    const ws = app.workspace;
+    const groupA = ws.getLeaf("split").parent; // a new tab group, so the user's tabs are untouched
+    const a = [groupA.children[0]];
+    for (let i = 1; i < 6; i++) a.push(ws.createLeafInParent(groupA, i));
+    const groupB = ws.createLeafBySplit(a[0]).parent;
+    const b = [groupB.children[0], ws.createLeafInParent(groupB, 1)];
+    for (const l of [...a, ...b]) await l.setViewState({ type: "empty" });
+    a[4].setPinned(true); // a[0..5], pinned a[4]
+    const alive = (l) => l.parent != null && l.parent.children.includes(l);
+    try {
+      ws.setActiveLeaf(a[2], { focus: true });
+      await wait(200);
+      ok(app.commands.executeCommandById("arvnfig:close-tabs-to-the-right"), "close right: command runs");
+      await wait(200);
+      ok(alive(a[2]) && !alive(a[3]) && alive(a[4]) && !alive(a[5]), "close right: right tabs closed, pinned kept");
+      ok(alive(a[0]) && alive(a[1]), "close right: left tabs kept");
+      ok(alive(b[0]) && alive(b[1]), "close right: other tab group untouched");
+      ok(ws.getMostRecentLeaf(ws.rootSplit) === a[2], "close right: active tab stays active");
+      app.commands.executeCommandById("arvnfig:close-tabs-to-the-left");
+      await wait(200);
+      ok(!alive(a[0]) && !alive(a[1]) && alive(a[2]) && alive(a[4]), "close left: left tabs closed");
+      ok(alive(b[0]) && alive(b[1]), "close left: other tab group untouched");
+      // Nothing left to close on the left: the command is unavailable.
+      ok(!app.commands.findCommand("arvnfig:close-tabs-to-the-left").checkCallback(true), "close left: unavailable when nothing to close");
+    } finally {
+      a[4].setPinned(false);
+      for (const l of [...a, ...b]) if (alive(l)) l.detach();
+      if (leaf.parent) ws.setActiveLeaf(leaf, { focus: true });
+    }
+  }
 
   } catch (e) { out.push("ERROR " + e.message + " | doc=" + JSON.stringify(cm.state.doc.toString())); }
   Object.assign(app.plugins.plugins.arvnfig.settings.lockedHeadings, savedSettings);
