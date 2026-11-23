@@ -19,6 +19,7 @@
 
 import { Modal, Notice, editorInfoField, type App, type TFile } from "obsidian";
 import { findHeadingLinks } from "./renameLinks";
+import { inCodeOrFrontmatter, noteEdit } from "./regions";
 import { Annotation, EditorState, StateField, Transaction, type Extension, type Text } from "@codemirror/state";
 import { EditorView, ViewPlugin } from "@codemirror/view";
 
@@ -103,23 +104,6 @@ const HEADING_PREFIX = /^#{1,6}[ \t]+/;
 const FENCE = /^ {0,3}(```|~~~)/;
 const BLOCKING_EVENTS = ["input", "delete", "move"];
 
-/** True if line n is inside YAML frontmatter or a fenced code block. */
-function inCodeOrFrontmatter(doc: Text, n: number): boolean {
-  let inFront = false;
-  let fence: string | null = null;
-  for (let i = 1; i < n; i++) {
-    const text = doc.line(i).text;
-    if (i === 1 && text === "---") { inFront = true; continue; }
-    if (inFront) { if (text === "---" || text === "...") inFront = false; continue; }
-    const m = FENCE.exec(text);
-    if (m) {
-      if (fence === null) fence = m[1];
-      else if (m[1] === fence) fence = null;
-    }
-  }
-  return inFront || fence !== null;
-}
-
 /** A non-empty ATX heading outside code blocks and frontmatter. */
 function isHeadingLine(doc: Text, n: number): boolean {
   const text = doc.line(n).text;
@@ -179,6 +163,7 @@ function massEditHits(tr: Transaction): HeadingLine[] {
 const draftHeadings = StateField.define<readonly number[]>({
   create: () => [],
   update(value, tr) {
+    noteEdit(tr);
     const doc = tr.state.doc;
     let drafts = tr.docChanged ? value.map((p) => tr.changes.mapPos(p, 1)) : [...value];
 
@@ -529,6 +514,7 @@ export function lockedHeadingsExtension(app: App, getSettings: () => LockedHeadi
 
   const filter = EditorState.changeFilter.of((tr) => {
     if (!tr.docChanged || tr.annotation(confirmedDelete)) return true;
+    noteEdit(tr);
     if (!BLOCKING_EVENTS.some((e) => tr.isUserEvent(e))) {
       if (!isActive(tr.startState)) return true;
       const source = massEditSource(tr);
@@ -560,6 +546,7 @@ export function lockedHeadingsExtension(app: App, getSettings: () => LockedHeadi
   const blocksHistoryStep = (tr: unknown): boolean => {
     if (historyBypass) return false;
     if (!(tr instanceof Transaction) || !tr.docChanged) return false;
+    noteEdit(tr);
     const isUndo = tr.isUserEvent("undo");
     if (!isUndo && !tr.isUserEvent("redo")) return false;
     if (!isActive(tr.startState)) return false;
